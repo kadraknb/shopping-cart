@@ -1,3 +1,5 @@
+// const { fetchProducts } = require('./helpers/fetchProducts');
+
 const createProductImageElement = (imageSource) => {
   const img = document.createElement('img');
   img.className = 'item__image';
@@ -12,9 +14,12 @@ const createCustomElement = (element, className, innerText) => {
   return e;
 };
 
-const createProductItemElement = ({ sku, name, image }) => {
+const createProductItemElement = (sku, name, image) => {
   const section = document.createElement('section');
   section.className = 'item';
+  // console.log(sku);
+  // console.log(name);
+  // console.log(image);
 
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
@@ -23,6 +28,14 @@ const createProductItemElement = ({ sku, name, image }) => {
 
   return section;
 };
+const roda = async () => {
+  const seie = await fetchProducts('computer');
+  seie.forEach((aa) => {
+    const { id, title, thumbnail } = aa;
+    document.querySelector('.items').appendChild(createProductItemElement(id, title, thumbnail));
+  });
+};
+roda();
 
 const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').innerText;
 
@@ -35,8 +48,8 @@ const createCartItemElement = ({ sku, name, salePrice }) => {
   li.className = 'cart__item';
   li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
   li.addEventListener('click', cartItemClickListener);
-  
+
   return li;
 };
-
-window.onload = () => { };
+// fetchProducts('computador');
+// window.onload = () => {};
