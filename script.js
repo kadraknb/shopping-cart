@@ -28,28 +28,43 @@ const createProductItemElement = (sku, name, image) => {
 
   return section;
 };
-const roda = async () => {
+
+const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').innerText;
+
+const cartItemClickListener = (event) => {
+  getSkuFromProductItem(event);
+};
+// const createCartItemElement = ({ sku, name, salePrice }) => {
+
+const createCartItemElement = (sku, name, salePrice) => {
+  const li = document.createElement('li');
+  li.className = 'cart__item';
+  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.addEventListener('click', cartItemClickListener);
+  
+  return li;
+};
+const listaItems = async () => {
   const seie = await fetchProducts('computer');
   seie.forEach((aa) => {
     const { id, title, thumbnail } = aa;
     document.querySelector('.items').appendChild(createProductItemElement(id, title, thumbnail));
   });
 };
-roda();
-
-const getSkuFromProductItem = (item) => item.querySelector('span.item__sku').innerText;
-
-const cartItemClickListener = (event) => {
-  // coloque seu código aqui
+const addCarinho = () => {
+  document.querySelector('.items').addEventListener('click', async (event) => {
+    if (event.target.className === 'item__add') {
+      const idM = event.srcElement.parentNode.querySelector('.item__sku').innerText;
+      const { id, title, price } = await fetchItem(idM);
+      document.querySelector('.cart__items').appendChild(createCartItemElement(id, title, price));
+    }
+  });
 };
-
-const createCartItemElement = ({ sku, name, salePrice }) => {
-  const li = document.createElement('li');
-  li.className = 'cart__item';
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
-  li.addEventListener('click', cartItemClickListener);
-
-  return li;
-};
+// listaItems();
+// addCarinho();
+// createCartItemElement('sku', 'name', 'salePrice');
+// document.querySelectorAll('.item__add')[0].addEventListener('click', (event) => {
+//   console.log(event.target);
+// }); 
 // fetchProducts('computador');
-// window.onload = () => {};
+window.onload = () => { listaItems(); addCarinho(); };
