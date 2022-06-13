@@ -3,13 +3,6 @@ const { fetchItem } = require('../helpers/fetchItem');
 const item = require('../mocks/item');
 
 describe('2 - Teste a função fetchItem', () => {
-  /* it( '',() => {
-    const actual = ;
-    const expected = ;
-
-    expect(actual).(expected);
-
-  }); */
   it('se e uma funcao', () => {
     const actual = fetchItem;
     const expected = 'function';
