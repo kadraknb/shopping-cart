@@ -6,6 +6,7 @@ const fetchProducts = async (QUERY) => {
     return data.results;
   } catch (error) { throw error.message; }
 };
+
 if (typeof module !== 'undefined') {
   module.exports = {
     fetchProducts,

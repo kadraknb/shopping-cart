@@ -19,28 +19,32 @@ const createCustomElement = (element, className, innerText) => {
   e.innerText = innerText;
   return e;
 };
-const createProductItemElement = (sku, name, image) => {
+const createProductItemElement = (sku, name, image, salePrice) => {
   const section = document.createElement('section');
   section.className = 'item';
   section.appendChild(createCustomElement('span', 'item__sku', sku));
   section.appendChild(createCustomElement('span', 'item__title', name));
   section.appendChild(createProductImageElement(image));
+  section.appendChild(createCustomElement('span', 'item__price', `R$ ${(salePrice).toFixed(2)}`))
   section.appendChild(createCustomElement('button', 'item__add', 'Adicionar ao carrinho!'));
   return section;
 };
 
-const createCartItemElement = (sku, name, salePrice) => {
+const createCartItemElement = (sku, name, salePrice, secure_thumbnail) => {
   const li = document.createElement('li');
   li.className = 'cart__item';
   li.id = sku;
-  li.innerText = `SKU: ${sku} | NAME: ${name} | PRICE: $${salePrice}`;
+  li.appendChild(createCustomElement('button', 'item__remov', 'X'));
+  li.appendChild(createProductImageElement(secure_thumbnail));
+  li.appendChild(createCustomElement('span', 'item__title', name));
+  li.appendChild(createCustomElement('span', 'item__title', `R$${salePrice}`));
   return li;
 };
 const listaItems = async () => {
-  const seie = await fetchProducts('computer');
-  seie.forEach((aa) => {
-    const { id, title, thumbnail } = aa;
-    item.appendChild(createProductItemElement(id, title, thumbnail));
+  const get = await fetchProducts('computer');
+  get.forEach((aa) => {
+    const { id, title, thumbnail, price } = aa;
+    item.appendChild(createProductItemElement(id, title, thumbnail, price));
   });
 };
 const awaitList = async () => {
@@ -49,14 +53,17 @@ const awaitList = async () => {
 };
 const totalPrice = (price) => {
   total += parseFloat(price.toPrecision(6));
+  console.log(document.querySelector('.total-price'));
   document.querySelector('.total-price').innerText = total;
 };
 const addCarinho = () => {
   item.addEventListener('click', async (event) => {
     if (event.target.className === 'item__add') {
       const idM = event.target.parentNode.querySelector('.item__sku').innerText;
-      const { id, title, price } = await fetchItem(idM);
-      cart.appendChild(createCartItemElement(id, title, price));
+      const { id, title, price, secure_thumbnail } = await fetchItem(idM);
+      const s = await fetchItem(idM);
+      console.log(s);
+      cart.appendChild(createCartItemElement(id, title, price, secure_thumbnail));
       saveCartItems(id);
       totalPrice(price);
     }
@@ -64,8 +71,8 @@ const addCarinho = () => {
 };
 const cartSave = () => {
   Object.values(localStorage).filter((aa) => aa.startsWith('MLB')).forEach(async (idMLB) => {
-    const { id, title, price } = await fetchItem(idMLB);
-    cart.appendChild(createCartItemElement(id, title, price));
+    const { id, title, price, secure_thumbnail } = await fetchItem(idMLB);
+    cart.appendChild(createCartItemElement(id, title, price, secure_thumbnail));
     totalPrice(price);
   });
 };
